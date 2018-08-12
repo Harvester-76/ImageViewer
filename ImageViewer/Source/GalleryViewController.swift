@@ -21,6 +21,7 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
     fileprivate var seeAllCloseButton: UIButton? = nil
     fileprivate var thumbnailsButton: UIButton? = UIButton.thumbnailsButton()
     fileprivate var deleteButton: UIButton? = UIButton.deleteButton()
+    fileprivate var activityButton: UIButton? = UIButton.activityButton()
     fileprivate let scrubber = VideoScrubber()
 
     fileprivate weak var initialItemController: ItemController?
@@ -46,7 +47,8 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
     fileprivate var closeLayout = ButtonLayout.pinRight(8, 16)
     fileprivate var seeAllCloseLayout = ButtonLayout.pinRight(8, 16)
     fileprivate var thumbnailsLayout = ButtonLayout.pinLeft(8, 16)
-    fileprivate var deleteLayout = ButtonLayout.pinRight(8, 66)
+    fileprivate var deleteLayout = ButtonLayout.pinRight(8, 184)
+    fileprivate var activityLayout = ButtonLayout.pinRight(8, 66)
     fileprivate var statusBarHidden = true
     fileprivate var overlayAccelerationFactor: CGFloat = 1
     fileprivate var rotationDuration = 0.15
@@ -87,6 +89,7 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
             case .footerViewLayout(let layout):                 footerLayout = layout
             case .closeLayout(let layout):                      closeLayout = layout
             case .deleteLayout(let layout):                     deleteLayout = layout
+            case .activityLayout(let layout):                   activityLayout = layout
             case .thumbnailsLayout(let layout):                 thumbnailsLayout = layout
             case .statusBarHidden(let hidden):                  statusBarHidden = hidden
             case .hideDecorationViewsOnLaunch(let hidden):      decorationViewsHidden = hidden
@@ -143,6 +146,15 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
                 case .custom(let button):   deleteButton = button
                 case .builtIn:              break
                 }
+
+            case .activityButtonMode(let buttonMode):
+                switch buttonMode {
+
+                case .none:                 activityButton = nil
+                case .custom(let button):   activityButton = button
+                case .builtIn:              break
+                }
+
 
                 default: break
             }
@@ -240,6 +252,15 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
         }
     }
 
+    fileprivate func configureActivityButton() {
+
+        if let activityButton = activityButton {
+            activityButton.addTarget(self, action: #selector(GalleryViewController.showActivity), for: .touchUpInside)
+            activityButton.alpha = 0
+            self.view.addSubview(activityButton)
+        }
+    }
+
     fileprivate func configureScrubber() {
 
         scrubber.alpha = 0
@@ -260,6 +281,7 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
         configureCloseButton()
         configureThumbnailsButton()
         configureDeleteButton()
+        configureActivityButton()
         configureScrubber()
 
         self.view.clipsToBounds = false
@@ -321,6 +343,7 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
         layoutButton(closeButton, layout: closeLayout)
         layoutButton(thumbnailsButton, layout: thumbnailsLayout)
         layoutButton(deleteButton, layout: deleteLayout)
+        layoutButton(activityButton, layout: activityLayout)
         layoutHeaderView()
         layoutFooterView()
         layoutScrubber()
@@ -510,6 +533,41 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
         itemController.fetchImage()
     }
 
+    @objc fileprivate func showActivity() {
+
+        guard let firstVC = viewControllers?.first else { return }
+
+        if let imageController = firstVC as? ImageViewController {
+            showActivityViewController(controller: imageController, for: imageController.itemView)
+        } else if let videoController = firstVC as? VideoViewController {
+            showActivityViewController(controller: videoController, for: videoController.itemView)
+        }
+    }
+
+    open func showActivityViewController(controller: ItemController, for item: ItemView) {
+
+        var activityVC: UIActivityViewController
+
+        switch (controller, item) {
+
+            case (_ as ImageViewController, let item as UIImageView):
+                guard let image = item.image else { return }
+                activityVC = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+
+            case (_ as VideoViewController, let item as VideoView):
+                guard let videoUrl = ((item.player?.currentItem?.asset) as? AVURLAsset)?.url else { return }
+                activityVC = UIActivityViewController(activityItems: [videoUrl], applicationActivities: nil)
+
+            default:  return
+        }
+
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            activityVC.popoverPresentationController?.sourceView = activityButton
+            activityVC.popoverPresentationController?.sourceRect = activityButton?.bounds ?? .zero
+        }
+        present(activityVC, animated: true)
+    }
+
     // MARK: - Animations
 
     @objc fileprivate func rotate() {
@@ -568,6 +626,7 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
             self?.closeButton?.alpha = 0.0
             self?.thumbnailsButton?.alpha = 0.0
             self?.deleteButton?.alpha = 0.0
+            self?.activityButton?.alpha = 0.0
             self?.scrubber.alpha = 0.0
 
             }, completion: { [weak self] done in
@@ -612,6 +671,7 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
             self?.closeButton?.alpha = targetAlpha
             self?.thumbnailsButton?.alpha = targetAlpha
             self?.deleteButton?.alpha = targetAlpha
+            self?.activityButton?.alpha = targetAlpha
 
             if let _ = self?.viewControllers?.first as? VideoViewController {
 
@@ -670,20 +730,7 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
     }
 
     open func itemControllerDidLongPress(_ controller: ItemController, in item: ItemView) {
-        switch (controller, item) {
-
-        case (_ as ImageViewController, let item as UIImageView):
-            guard let image = item.image else { return }
-            let activityVC = UIActivityViewController(activityItems: [image], applicationActivities: nil)
-            self.present(activityVC, animated: true)
-
-        case (_ as VideoViewController, let item as VideoView):
-            guard let videoUrl = ((item.player?.currentItem?.asset) as? AVURLAsset)?.url else { return }
-            let activityVC = UIActivityViewController(activityItems: [videoUrl], applicationActivities: nil)
-            self.present(activityVC, animated: true)
-
-        default:  return
-        }
+        showActivityViewController(controller: controller, for: item)
     }
 
     public func itemController(_ controller: ItemController, didSwipeToDismissWithDistanceToEdge distance: CGFloat) {
@@ -695,6 +742,7 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
             closeButton?.alpha = alpha
             thumbnailsButton?.alpha = alpha
             deleteButton?.alpha = alpha
+            activityButton?.alpha = alpha
             headerView?.alpha = alpha
             footerView?.alpha = alpha
 

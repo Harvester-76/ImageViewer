@@ -30,6 +30,9 @@ public enum GalleryConfigurationItem {
     ///Option to set the Delete button type.
     case deleteButtonMode(ButtonMode)
 
+    ///Option to set the Activity button type.
+    case activityButtonMode(ButtonMode)
+
     /// Layout behaviour for the Close button.
     case closeLayout(ButtonLayout)
 
@@ -41,6 +44,9 @@ public enum GalleryConfigurationItem {
 
     /// Layout behaviour for the Delete button.
     case deleteLayout(ButtonLayout)
+
+    /// Layout behaviour for the Activity button.
+    case activityLayout(ButtonLayout)
 
     /// This spinner is shown when we page to an image page, but the image itself is still loading.
     case spinnerStyle(UIActivityIndicatorViewStyle)

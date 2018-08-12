@@ -115,4 +115,13 @@ extension UIButton {
 
         return button
     }
+
+    static func activityButton() -> UIButton {
+
+        let button = UIButton(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: 110, height: 50)))
+        button.setTitle("Поделиться", for: .normal)
+        button.setTitleShadowColor(.black, for: .normal)
+
+        return button
+    }
 }
