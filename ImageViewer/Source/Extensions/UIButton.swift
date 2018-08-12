@@ -101,8 +101,8 @@ extension UIButton {
     static func thumbnailsButton() -> UIButton {
 
         let button = UIButton(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: 80, height: 50)))
-        button.setTitle("See All", for: .normal)
-        //button.titleLabel?.textColor = UIColor.redColor()
+        button.setTitle("См. все", for: .normal)
+        button.setTitleShadowColor(.black, for: .normal)
 
         return button
     }
@@ -110,7 +110,8 @@ extension UIButton {
     static func deleteButton() -> UIButton {
 
         let button = UIButton(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: 80, height: 50)))
-        button.setTitle("Delete", for: .normal)
+        button.setTitle("Удалить", for: .normal)
+        button.setTitleShadowColor(.black, for: .normal)
 
         return button
     }
