@@ -23,4 +23,7 @@ public protocol DisplaceableView {
 public protocol GalleryDisplacedViewsDataSource: class {
 
     func provideDisplacementItem(atIndex index: Int) -> DisplaceableView?
+
+    func displacementItem(atIndex index: Int, targetSizeInBounds bounds: CGSize) -> CGSize?
+
 }

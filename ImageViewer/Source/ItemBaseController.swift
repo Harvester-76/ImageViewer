@@ -46,6 +46,7 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
     fileprivate var thresholdVelocity: CGFloat = 500 // The speed of swipe needs to be at least this amount of pixels per second for the swipe to finish dismissal.
     fileprivate var displacementKeepOriginalInPlace = false
     fileprivate var displacementInsetMargin: CGFloat = 50
+    fileprivate var displacementRequiresOriginalSize = false
     fileprivate var swipeToDismissMode = GallerySwipeToDismissMode.always
     fileprivate var toggleDecorationViewBySingleTap = true
     fileprivate var activityViewByLongPress = true
@@ -85,6 +86,7 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
             case .itemFadeDuration(let duration):                   itemFadeDuration = duration
             case .displacementKeepOriginalInPlace(let keep):        displacementKeepOriginalInPlace = keep
             case .displacementInsetMargin(let margin):              displacementInsetMargin = margin
+            case .displacementRequiresOriginalSize(let require):    displacementRequiresOriginalSize = require
             case .swipeToDismissMode(let mode):                     swipeToDismissMode = mode
             case .toggleDecorationViewsBySingleTap(let enabled):    toggleDecorationViewBySingleTap = enabled
             case .activityViewByLongPress(let enabled):             activityViewByLongPress = enabled
@@ -247,9 +249,12 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
 
         if let size = itemView.image?.size , size != CGSize.zero {
 
-            let aspectFitItemSize = aspectFitSize(forContentOfSize: size, inBounds: self.scrollView.bounds.size)
-
-            itemView.bounds.size = aspectFitItemSize
+            if displacementRequiresOriginalSize, let targetSize = displacedViewsDataSource?.displacementItem(atIndex: index, targetSizeInBounds: self.scrollView.bounds.size) {
+                itemView.bounds.size = targetSize
+            } else {
+                let aspectFitItemSize = aspectFitSize(forContentOfSize: size, inBounds: self.scrollView.bounds.size)
+                itemView.bounds.size = aspectFitItemSize
+            }
             scrollView.contentSize = itemView.bounds.size
 
             itemView.center = scrollView.boundsCenter
@@ -514,6 +519,10 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
     func displacementTargetSize(forSize size: CGSize) -> CGSize {
 
         let boundingSize = rotationAdjustedBounds().size
+
+        if displacementRequiresOriginalSize, let targetSize = displacedViewsDataSource?.displacementItem(atIndex: index, targetSizeInBounds: boundingSize) {
+            return targetSize
+        }
 
         return aspectFitSize(forContentOfSize: size, inBounds: boundingSize)
     }
