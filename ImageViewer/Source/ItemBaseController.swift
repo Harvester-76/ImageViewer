@@ -49,6 +49,7 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
     fileprivate var swipeToDismissMode = GallerySwipeToDismissMode.always
     fileprivate var toggleDecorationViewBySingleTap = true
     fileprivate var activityViewByLongPress = true
+    fileprivate var activityIndicatorHidden = false
 
     /// INTERACTIONS
     fileprivate var singleTapRecognizer: UITapGestureRecognizer?
@@ -89,6 +90,7 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
             case .activityViewByLongPress(let enabled):             activityViewByLongPress = enabled
             case .spinnerColor(let color):                          activityIndicatorView.color = color
             case .spinnerStyle(let style):                          activityIndicatorView.activityIndicatorViewStyle = style
+            case .spinnerHidden(let hidden):                        activityIndicatorHidden = hidden
 
             case .displacementTransitionStyle(let style):
 
@@ -181,7 +183,9 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
         self.view.addSubview(scrollView)
         scrollView.addSubview(itemView)
 
-        activityIndicatorView.startAnimating()
+        if !activityIndicatorHidden {
+            activityIndicatorView.startAnimating()
+        }
         view.addSubview(activityIndicatorView)
     }
 
@@ -476,6 +480,11 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
                     }, completion: { [weak self] _ in
 
                         self?.itemView.isHidden = false
+
+                        if self?.itemView.image == nil {
+                            self?.itemView.image = image
+                        }
+
                         displacedView.isHidden = false
                         animatedImageView.removeFromSuperview()
 

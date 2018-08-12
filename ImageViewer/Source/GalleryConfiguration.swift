@@ -48,6 +48,9 @@ public enum GalleryConfigurationItem {
     /// Tint color for the spinner.
     case spinnerColor(UIColor)
 
+    /// Sets the spinner visible/invisible.
+    case spinnerHidden(Bool)
+
     /// Layout behaviour for optional header view.
     case headerViewLayout(HeaderLayout)
 
