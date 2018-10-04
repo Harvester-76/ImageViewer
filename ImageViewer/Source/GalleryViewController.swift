@@ -326,6 +326,17 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
             })
     }
 
+    @available(iOS 11.0, *)
+    open override func viewSafeAreaInsetsDidChange() {
+        super.viewSafeAreaInsetsDidChange()
+
+        if view.bounds.width < view.bounds.height && (statusBarHidden || UIScreen.hasNotch) {
+            additionalSafeAreaInsets = UIEdgeInsets(top: -20, left: 0, bottom: 0, right: 0)
+        } else {
+            additionalSafeAreaInsets = .zero
+        }
+    }
+
     open override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
