@@ -162,15 +162,15 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
 
         pagingDataSource = GalleryPagingDataSource(itemsDataSource: itemsDataSource, displacedViewsDataSource: displacedViewsDataSource, scrubber: scrubber, configuration: configuration)
 
-        super.init(transitionStyle: UIPageViewControllerTransitionStyle.scroll,
-                   navigationOrientation: UIPageViewControllerNavigationOrientation.horizontal,
-                   options: [UIPageViewControllerOptionInterPageSpacingKey : NSNumber(value: spineDividerWidth as Float)])
+        super.init(transitionStyle: UIPageViewController.TransitionStyle.scroll,
+                   navigationOrientation: UIPageViewController.NavigationOrientation.horizontal,
+                   options: convertToOptionalUIPageViewControllerOptionsKeyDictionary([convertFromUIPageViewControllerOptionsKey(UIPageViewController.OptionsKey.interPageSpacing) : NSNumber(value: spineDividerWidth as Float)]))
 
         pagingDataSource.itemControllerDelegate = self
 
         ///This feels out of place, one would expect even the first presented(paged) item controller to be provided by the paging dataSource but there is nothing we can do as Apple requires the first controller to be set via this "setViewControllers" method.
         let initialController = pagingDataSource.createItemController(startIndex, isInitial: true)
-        self.setViewControllers([initialController], direction: UIPageViewControllerNavigationDirection.forward, animated: false, completion: nil)
+        self.setViewControllers([initialController], direction: UIPageViewController.NavigationDirection.forward, animated: false, completion: nil)
 
         if let controller = initialController as? ItemController {
 
@@ -181,9 +181,9 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
         self.modalPresentationStyle = .overFullScreen
         self.dataSource = pagingDataSource
 
-        UIApplication.applicationWindow.windowLevel = (statusBarHidden) ? UIWindowLevelStatusBar + 1 : UIWindowLevelNormal
+        UIApplication.applicationWindow.windowLevel = (statusBarHidden) ? UIWindow.Level.statusBar + 1 : UIWindow.Level.normal
 
-        NotificationCenter.default.addObserver(self, selector: #selector(GalleryViewController.rotate), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(GalleryViewController.rotate), name: UIDevice.orientationDidChangeNotification, object: nil)
 
         if continueNextVideoOnFinish {
             NotificationCenter.default.addObserver(self, selector: #selector(didEndPlaying), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
@@ -206,7 +206,7 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
         overlayView.center = CGPoint(x: (UIScreen.main.bounds.width / 2), y: (UIScreen.main.bounds.height / 2))
 
         self.view.addSubview(overlayView)
-        self.view.sendSubview(toBack: overlayView)
+        self.view.sendSubviewToBack(overlayView)
     }
 
     fileprivate func configureHeaderView() {
@@ -482,7 +482,7 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
             thumbnailsController.closeLayout = seeAllCloseLayout
         } else if let closeButton = closeButton {
             let seeAllCloseButton = UIButton(frame: CGRect(origin: CGPoint.zero, size: closeButton.bounds.size))
-            seeAllCloseButton.setImage(closeButton.image(for: UIControlState()), for: UIControlState())
+            seeAllCloseButton.setImage(closeButton.image(for: UIControl.State()), for: UIControl.State())
             seeAllCloseButton.setImage(closeButton.image(for: .highlighted), for: .highlighted)
             thumbnailsController.closeButton = seeAllCloseButton
             thumbnailsController.closeLayout = closeLayout
@@ -501,7 +501,7 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
         guard currentIndex != index && index >= 0 && index < self.itemsDataSource.itemCount() else { return }
 
         let imageViewController = self.pagingDataSource.createItemController(index)
-        let direction: UIPageViewControllerNavigationDirection = index > currentIndex ? .forward : .reverse
+        let direction: UIPageViewController.NavigationDirection = index > currentIndex ? .forward : .reverse
 
         // workaround to make UIPageViewController happy
         if direction == .forward {
@@ -525,7 +525,7 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
 
         // If removing last item, go back, otherwise, go forward
 
-        let direction: UIPageViewControllerNavigationDirection = index < self.itemsDataSource.itemCount() ? .forward : .reverse
+        let direction: UIPageViewController.NavigationDirection = index < self.itemsDataSource.itemCount() ? .forward : .reverse
 
         let newIndex = direction == .forward ? index : index - 1
 
@@ -594,7 +594,7 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
 
         isAnimating = true
 
-        UIView.animate(withDuration: rotationDuration, delay: 0, options: UIViewAnimationOptions.curveLinear, animations: { [weak self] () -> Void in
+        UIView.animate(withDuration: rotationDuration, delay: 0, options: UIView.AnimationOptions.curveLinear, animations: { [weak self] () -> Void in
 
             self?.view.transform = windowRotationTransform()
             self?.view.bounds = rotationAdjustedBounds()
@@ -666,7 +666,7 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
 
         self.dismiss(animated: animated) {
 
-            UIApplication.applicationWindow.windowLevel = UIWindowLevelNormal
+            UIApplication.applicationWindow.windowLevel = UIWindow.Level.normal
             completion?()
         }
     }
@@ -772,4 +772,15 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
         self.overlayView.removeFromSuperview()
         self.dismiss(animated: false, completion: nil)
     }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToOptionalUIPageViewControllerOptionsKeyDictionary(_ input: [String: Any]?) -> [UIPageViewController.OptionsKey: Any]? {
+	guard let input = input else { return nil }
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (UIPageViewController.OptionsKey(rawValue: key), value)})
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIPageViewControllerOptionsKey(_ input: UIPageViewController.OptionsKey) -> String {
+	return input.rawValue
 }
