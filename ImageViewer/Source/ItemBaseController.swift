@@ -204,10 +204,12 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
     public func fetchImage() {
 
         fetchImageBlock { [weak self] image in
-            DispatchQueue.main.async {
-                self?.activityIndicatorView.stopAnimating()
 
-                if let image = image {
+            if let image = image {
+
+                DispatchQueue.main.async {
+                    self?.activityIndicatorView.stopAnimating()
+
                     var itemView = self?.itemView
                     itemView?.image = image
                     itemView?.isAccessibilityElement = image.isAccessibilityElement
