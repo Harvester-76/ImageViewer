@@ -166,7 +166,7 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
 
         super.init(transitionStyle: UIPageViewController.TransitionStyle.scroll,
                 navigationOrientation: UIPageViewController.NavigationOrientation.horizontal,
-                options: convertToOptionalUIPageViewControllerOptionsKeyDictionary([convertFromUIPageViewControllerOptionsKey(UIPageViewController.OptionsKey.interPageSpacing): NSNumber(value: spineDividerWidth as Float)]))
+                options: [UIPageViewController.OptionsKey.interPageSpacing: NSNumber(value: spineDividerWidth as Float)])
 
         pagingDataSource.itemControllerDelegate = self
 
@@ -783,16 +783,4 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
         self.overlayView.removeFromSuperview()
         self.dismiss(animated: false, completion: nil)
     }
-}
-
-
-// Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertToOptionalUIPageViewControllerOptionsKeyDictionary(_ input: [String: Any]?) -> [UIPageViewController.OptionsKey: Any]? {
-    guard let input = input else { return nil }
-    return Dictionary(uniqueKeysWithValues: input.map { key, value in (UIPageViewController.OptionsKey(rawValue: key), value) })
-}
-
-// Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertFromUIPageViewControllerOptionsKey(_ input: UIPageViewController.OptionsKey) -> String {
-    return input.rawValue
 }

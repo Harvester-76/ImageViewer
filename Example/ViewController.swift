@@ -113,7 +113,7 @@ class ViewController: UIViewController {
             GalleryConfigurationItem.overlayColor(UIColor(white: 0.035, alpha: 1)),
             GalleryConfigurationItem.overlayColorOpacity(1),
             GalleryConfigurationItem.overlayBlurOpacity(1),
-            GalleryConfigurationItem.overlayBlurStyle(UIBlurEffectStyle.light),
+            GalleryConfigurationItem.overlayBlurStyle(UIBlurEffect.Style.light),
             
             GalleryConfigurationItem.videoControlsColor(.white),
 
@@ -150,9 +150,13 @@ class ViewController: UIViewController {
 
 extension ViewController: GalleryDisplacedViewsDataSource {
 
-    func provideDisplacementItem(atIndex index: Int) -> DisplaceableView? {
+    public func provideDisplacementItem(atIndex index: Int) -> DisplaceableView? {
 
         return index < items.count ? items[index].imageView : nil
+    }
+
+    public func displacementItem(atIndex index: Int, targetSizeInBounds bounds: CGSize) -> CGSize? {
+        return index < items.count ? items[index].imageView.image?.size : nil
     }
 }
 
@@ -170,6 +174,10 @@ extension ViewController: GalleryItemsDataSource {
 }
 
 extension ViewController: GalleryItemsDelegate {
+
+    public func didActivityCompletedForGalleryItem(at index: Int, with activityType: UIActivity.ActivityType) {
+
+    }
 
     func removeGalleryItem(at index: Int) {
 
