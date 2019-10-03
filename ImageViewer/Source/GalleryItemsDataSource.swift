@@ -8,8 +8,11 @@
 
 import UIKit
 
+
 public protocol GalleryItemsDataSource: class {
 
     func itemCount() -> Int
+
     func provideGalleryItem(_ index: Int) -> GalleryItem
+
 }

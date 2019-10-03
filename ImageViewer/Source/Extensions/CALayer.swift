@@ -8,6 +8,7 @@
 
 import UIKit
 
+
 extension CALayer {
 
     func toImage() -> UIImage {
@@ -20,4 +21,5 @@ extension CALayer {
 
         return image!
     }
+
 }

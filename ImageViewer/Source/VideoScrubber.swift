@@ -9,6 +9,7 @@
 import UIKit
 import AVFoundation
 
+
 open class VideoScrubber: UIControl {
 
     let playButton = UIButton.playButton(width: 50, height: 40)
@@ -25,17 +26,17 @@ open class VideoScrubber: UIControl {
 
         willSet {
             if let player = player {
-                
+
                 ///KVO
                 player.removeObserver(self, forKeyPath: "status")
                 player.removeObserver(self, forKeyPath: "rate")
-                
+
                 ///NC
                 NotificationCenter.default.removeObserver(self)
-                
+
                 ///TIMER
                 if let periodicObserver = self.periodicObserver {
-                    
+
                     player.removeTimeObserver(periodicObserver)
                     self.periodicObserver = nil
                 }
@@ -106,8 +107,8 @@ open class VideoScrubber: UIControl {
         scrubber.maximumValue = 1000
         scrubber.value = 0
 
-        timeLabel.attributedText = NSAttributedString(string: "--:--", attributes: [NSAttributedString.Key.foregroundColor : self.tintColor!, NSAttributedString.Key.font : UIFont.systemFont(ofSize: 12)])
-        timeLabel.textAlignment =  .center
+        timeLabel.attributedText = NSAttributedString(string: "--:--", attributes: [NSAttributedString.Key.foregroundColor: self.tintColor!, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 12)])
+        timeLabel.textAlignment = .center
 
         playButton.addTarget(self, action: #selector(play), for: UIControl.Event.touchUpInside)
         pauseButton.addTarget(self, action: #selector(pause), for: UIControl.Event.touchUpInside)
@@ -145,9 +146,7 @@ open class VideoScrubber: UIControl {
 
                 stoppedSlidingTimeStamp = Date()
             }
-        }
-
-        else if keyPath == "rate" || keyPath == "status" {
+        } else if keyPath == "rate" || keyPath == "status" {
 
             self.update()
         }
@@ -160,7 +159,7 @@ open class VideoScrubber: UIControl {
 
     @objc func replay() {
 
-        self.player?.seek(to: CMTime(value:0 , timescale: 1))
+        self.player?.seek(to: CMTime(value: 0, timescale: 1))
         self.player?.play()
     }
 
@@ -173,7 +172,7 @@ open class VideoScrubber: UIControl {
 
         let progress = scrubber.value / scrubber.maximumValue //naturally will be between 0 to 1
 
-        if let player = self.player, let currentItem =  player.currentItem {
+        if let player = self.player, let currentItem = player.currentItem {
 
             let time = currentItem.duration.seconds * Double(progress)
             player.seek(to: CMTime(seconds: time, preferredTimescale: 1))
@@ -210,7 +209,7 @@ open class VideoScrubber: UIControl {
 
         guard scrubber.isSliding == false else { return }
 
-        let timeElapsed = Date().timeIntervalSince( stoppedSlidingTimeStamp)
+        let timeElapsed = Date().timeIntervalSince(stoppedSlidingTimeStamp)
         guard timeElapsed > 1 else {
             return
         }
@@ -231,21 +230,20 @@ open class VideoScrubber: UIControl {
 
     @objc func updateCurrentTime() {
 
-        if let duration = self.duration , self.duration != nil {
+        if let duration = self.duration, self.duration != nil {
 
             let sliderProgress = scrubber.value / scrubber.maximumValue
             let currentTime = Double(sliderProgress) * duration
 
             let timeString = stringFromTimeInterval(currentTime as TimeInterval)
 
-            timeLabel.attributedText = NSAttributedString(string: timeString, attributes: [NSAttributedString.Key.foregroundColor : self.tintColor!, NSAttributedString.Key.font : UIFont.systemFont(ofSize: 12)])
-        }
-        else {
-            timeLabel.attributedText = NSAttributedString(string: "--:--", attributes: [NSAttributedString.Key.foregroundColor : self.tintColor!, NSAttributedString.Key.font : UIFont.systemFont(ofSize: 12)])
+            timeLabel.attributedText = NSAttributedString(string: timeString, attributes: [NSAttributedString.Key.foregroundColor: self.tintColor!, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 12)])
+        } else {
+            timeLabel.attributedText = NSAttributedString(string: "--:--", attributes: [NSAttributedString.Key.foregroundColor: self.tintColor!, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 12)])
         }
     }
 
-    func stringFromTimeInterval(_ interval:TimeInterval) -> String {
+    func stringFromTimeInterval(_ interval: TimeInterval) -> String {
 
         let timeInterval = NSInteger(interval)
 
@@ -253,41 +251,41 @@ open class VideoScrubber: UIControl {
         let minutes = (timeInterval / 60) % 60
         //let hours = (timeInterval / 3600)
 
-        return NSString(format: "%0.2d:%0.2d",minutes,seconds) as String
+        return NSString(format: "%0.2d:%0.2d", minutes, seconds) as String
         //return NSString(format: "%0.2d:%0.2d:%0.2d",hours,minutes,seconds) as String
     }
-    
+
     override open func tintColorDidChange() {
-        timeLabel.attributedText = NSAttributedString(string: "--:--", attributes: [NSAttributedString.Key.foregroundColor : self.tintColor!, NSAttributedString.Key.font : UIFont.systemFont(ofSize: 12)])
-        
+        timeLabel.attributedText = NSAttributedString(string: "--:--", attributes: [NSAttributedString.Key.foregroundColor: self.tintColor!, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 12)])
+
         let playButtonImage = playButton.imageView?.image?.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
         playButton.imageView?.tintColor = self.tintColor
         playButton.setImage(playButtonImage, for: .normal)
-        
+
         if let playButtonImage = playButtonImage,
-            let highlightImage = self.image(playButtonImage, with: self.tintColor.shadeDarker()) as UIImage? {
+           let highlightImage = self.image(playButtonImage, with: self.tintColor.shadeDarker()) as UIImage? {
             playButton.setImage(highlightImage, for: .highlighted)
         }
-        
+
         let pauseButtonImage = pauseButton.imageView?.image?.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
         pauseButton.imageView?.tintColor = self.tintColor
         pauseButton.setImage(pauseButtonImage, for: .normal)
-        
+
         if let pauseButtonImage = pauseButtonImage,
-            let highlightImage = self.image(pauseButtonImage, with: self.tintColor.shadeDarker()) as UIImage? {
+           let highlightImage = self.image(pauseButtonImage, with: self.tintColor.shadeDarker()) as UIImage? {
             pauseButton.setImage(highlightImage, for: .highlighted)
         }
-        
+
         let replayButtonImage = replayButton.imageView?.image?.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
         replayButton.imageView?.tintColor = self.tintColor
         replayButton.setImage(replayButtonImage, for: .normal)
-        
+
         if let replayButtonImage = replayButtonImage,
-            let highlightImage = self.image(replayButtonImage, with: self.tintColor.shadeDarker()) as UIImage? {
+           let highlightImage = self.image(replayButtonImage, with: self.tintColor.shadeDarker()) as UIImage? {
             replayButton.setImage(highlightImage, for: .highlighted)
         }
     }
-    
+
     func image(_ image: UIImage, with color: UIColor) -> UIImage? {
         UIGraphicsBeginImageContext(image.size)
         let rect = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
@@ -299,4 +297,5 @@ open class VideoScrubber: UIControl {
         UIGraphicsEndImageContext()
         return fillImage
     }
+
 }

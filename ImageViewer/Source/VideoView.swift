@@ -9,10 +9,13 @@
 import UIKit
 import AVFoundation
 
+
 class VideoView: UIView {
 
     let previewImageView = UIImageView()
-    var image: UIImage? { didSet { previewImageView.image = image } }
+    var image: UIImage? {
+        didSet { previewImageView.image = image }
+    }
     var player: AVPlayer? {
 
         willSet {
@@ -26,8 +29,8 @@ class VideoView: UIView {
 
         didSet {
 
-            if  let player = self.player,
-                let videoLayer = self.layer as? AVPlayerLayer {
+            if let player = self.player,
+               let videoLayer = self.layer as? AVPlayerLayer {
 
                 videoLayer.player = player
                 videoLayer.videoGravity = AVLayerVideoGravity.resizeAspect
@@ -38,8 +41,8 @@ class VideoView: UIView {
         }
     }
 
-    override class var layerClass : AnyClass {
-        return AVPlayerLayer.self
+    override class var layerClass: AnyClass {
+        AVPlayerLayer.self
     }
 
     convenience init() {
@@ -66,9 +69,9 @@ class VideoView: UIView {
         player?.removeObserver(self, forKeyPath: "rate")
     }
 
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
 
-        if let status = self.player?.status, let rate = self.player?.rate  {
+        if let status = self.player?.status, let rate = self.player?.rate {
 
             if status == .readyToPlay && rate != 0 {
 
@@ -82,4 +85,5 @@ class VideoView: UIView {
             }
         }
     }
+
 }

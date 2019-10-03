@@ -8,7 +8,10 @@
 
 import UIKit
 
-extension UIImageView: ItemView {}
+
+extension UIImageView: ItemView {
+}
+
 
 class ImageViewController: ItemBaseController<UIImageView> {
 }

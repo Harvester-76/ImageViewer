@@ -8,6 +8,7 @@
 
 import UIKit
 
+
 class Slider: UISlider {
 
     @objc dynamic var isSliding: Bool = false
@@ -29,4 +30,5 @@ class Slider: UISlider {
 
         isSliding = false
     }
+
 }

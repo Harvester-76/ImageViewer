@@ -8,6 +8,7 @@
 
 import UIKit
 
+
 class BlurView: UIView {
 
     var blurPresentDuration: TimeInterval = 0.5
@@ -51,7 +52,7 @@ class BlurView: UIView {
         self.addSubview(colorView)
     }
 
-    @available (iOS, unavailable)
+    @available(iOS, unavailable)
     required init?(coder aDecoder: NSCoder) { fatalError() }
 
     override func layoutSubviews() {
@@ -68,13 +69,13 @@ class BlurView: UIView {
 
             self?.blurringViewContainer.alpha = self!.blurTargetOpacity
 
-            }, completion: nil)
+        }, completion: nil)
 
         UIView.animate(withDuration: colorPresentDuration, delay: colorPresentDelay, options: .curveLinear, animations: { [weak self] in
 
             self?.colorView.alpha = self!.colorTargetOpacity
 
-            }, completion: nil)
+        }, completion: nil)
     }
 
     func dismiss() {
@@ -83,12 +84,13 @@ class BlurView: UIView {
 
             self?.blurringViewContainer.alpha = 0
 
-            }, completion: nil)
+        }, completion: nil)
 
         UIView.animate(withDuration: colorDismissDuration, delay: colorDismissDelay, options: .curveLinear, animations: { [weak self] in
 
             self?.colorView.alpha = 0
 
-            }, completion: nil)
+        }, completion: nil)
     }
+
 }

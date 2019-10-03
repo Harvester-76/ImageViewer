@@ -8,6 +8,7 @@
 
 import UIKit
 
+
 class ThumbnailCell: UICollectionViewCell {
 
     let imageView = UIImageView()
@@ -27,4 +28,5 @@ class ThumbnailCell: UICollectionViewCell {
         imageView.frame = bounds
         super.layoutSubviews()
     }
+
 }

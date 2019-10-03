@@ -8,11 +8,11 @@
 
 import UIKit
 
+
 extension UIView {
 
     public var boundsCenter: CGPoint {
-
-        return CGPoint(x: self.bounds.width / 2, y: self.bounds.height / 2)
+        CGPoint(x: self.bounds.width / 2, y: self.bounds.height / 2)
     }
 
     func frame(inCoordinatesOfView parentView: UIView) -> CGRect {
@@ -22,8 +22,9 @@ extension UIView {
     }
 
     func addSubviews(_ subviews: UIView...) {
-
-        for view in subviews { self.addSubview(view) }
+        for view in subviews {
+            self.addSubview(view)
+        }
     }
 
     static func animateWithDuration(_ duration: TimeInterval, delay: TimeInterval, animations: @escaping () -> Void) {
@@ -35,12 +36,14 @@ extension UIView {
 
         UIView.animate(withDuration: duration, delay: delay, options: UIView.AnimationOptions(), animations: animations, completion: completion)
     }
+
 }
+
 
 extension DisplaceableView {
 
     func frameInCoordinatesOfScreen() -> CGRect {
-
-        return UIView().convert(self.bounds, to: UIScreen.main.coordinateSpace)
+        UIView().convert(self.bounds, to: UIScreen.main.coordinateSpace)
     }
+
 }

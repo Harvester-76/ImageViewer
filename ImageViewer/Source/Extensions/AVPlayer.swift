@@ -8,10 +8,11 @@
 
 import AVFoundation
 
+
 extension AVPlayer {
 
     func isPlaying() -> Bool {
-
-        return (self.rate != 0.0 && self.status == .readyToPlay)
+        (self.rate != 0.0 && self.status == .readyToPlay)
     }
+
 }

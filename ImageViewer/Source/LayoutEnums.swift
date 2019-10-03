@@ -8,26 +8,28 @@
 
 import UIKit
 
+
 public typealias MarginLeft = CGFloat
 public typealias MarginRight = CGFloat
 public typealias MarginTop = CGFloat
 public typealias MarginBottom = CGFloat
 
+
 /// Represents possible layouts for the close button
 public enum ButtonLayout {
-
-    case pinLeft(MarginTop, MarginLeft)
-    case pinRight(MarginTop, MarginRight)
+    case pinLeft(MarginTop, MarginTop, MarginLeft)
+    case pinRight(MarginTop, MarginTop, MarginRight)
 }
+
 
 /// Represents various possible layouts for the header
 public enum HeaderLayout {
-
     case pinLeft(MarginTop, MarginLeft)
     case pinRight(MarginTop, MarginRight)
     case pinBoth(MarginTop, MarginLeft, MarginRight)
     case center(MarginTop)
 }
+
 
 /// Represents various possible layouts for the footer
 public enum FooterLayout {

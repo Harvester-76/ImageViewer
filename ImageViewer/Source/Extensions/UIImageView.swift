@@ -8,6 +8,7 @@
 
 import UIKit
 
+
 extension DisplaceableView {
 
     func imageView() -> UIImageView {
@@ -19,4 +20,5 @@ extension DisplaceableView {
 
         return imageView
     }
+
 }

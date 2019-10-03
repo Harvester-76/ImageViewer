@@ -45,11 +45,11 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
     fileprivate var galleryPagingMode = GalleryPagingMode.standard
     fileprivate var headerLayout = HeaderLayout.center(25)
     fileprivate var footerLayout = FooterLayout.center(25)
-    fileprivate var closeLayout = ButtonLayout.pinRight(8, 16)
-    fileprivate var seeAllCloseLayout = ButtonLayout.pinRight(8, 16)
-    fileprivate var thumbnailsLayout = ButtonLayout.pinLeft(8, 16)
-    fileprivate var deleteLayout = ButtonLayout.pinRight(8, 184)
-    fileprivate var activityLayout = ButtonLayout.pinRight(8, 66)
+    fileprivate var closeLayout = ButtonLayout.pinRight(8, 8, 16)
+    fileprivate var seeAllCloseLayout = ButtonLayout.pinRight(8, 8, 16)
+    fileprivate var thumbnailsLayout = ButtonLayout.pinLeft(8, 8, 16)
+    fileprivate var deleteLayout = ButtonLayout.pinRight(8, 8, 184)
+    fileprivate var activityLayout = ButtonLayout.pinRight(8, 8, 66)
     fileprivate var statusBarHidden = true
     fileprivate var overlayAccelerationFactor: CGFloat = 1
     fileprivate var rotationDuration = 0.15
@@ -332,7 +332,7 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
     open override func viewSafeAreaInsetsDidChange() {
         super.viewSafeAreaInsetsDidChange()
 
-        if view.bounds.width < view.bounds.height && (statusBarHidden || UIScreen.hasNotch) {
+        if isPortraitOrientation && (statusBarHidden || UIScreen.hasNotch) {
             additionalSafeAreaInsets = UIEdgeInsets(top: -20, left: 0, bottom: 0, right: 0)
         } else {
             additionalSafeAreaInsets = .zero
@@ -376,13 +376,17 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
 
         switch layout {
 
-            case .pinRight(let marginTop, let marginRight):
+            case let .pinRight(marginTopPortrait, marginTopLandscape, marginRight):
+
+                let marginTop = isPortraitOrientation ? marginTopPortrait : marginTopLandscape
 
                 button.autoresizingMask = [.flexibleBottomMargin, .flexibleLeftMargin]
                 button.frame.origin.x = self.view.bounds.size.width - marginRight - button.bounds.size.width
                 button.frame.origin.y = defaultInsets.top + marginTop
 
-            case .pinLeft(let marginTop, let marginLeft):
+            case let .pinLeft(marginTopPortrait, marginTopLandscape, marginLeft):
+
+                let marginTop = isPortraitOrientation ? marginTopPortrait : marginTopLandscape
 
                 button.autoresizingMask = [.flexibleBottomMargin, .flexibleRightMargin]
                 button.frame.origin.x = marginLeft

@@ -8,6 +8,7 @@
 
 import UIKit
 
+
 public protocol DisplaceableView {
 
     var image: UIImage? { get }
@@ -19,6 +20,7 @@ public protocol DisplaceableView {
 
     func convert(_ point: CGPoint, to view: UIView?) -> CGPoint
 }
+
 
 public protocol GalleryDisplacedViewsDataSource: class {
 

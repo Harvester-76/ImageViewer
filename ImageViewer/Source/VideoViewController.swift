@@ -10,7 +10,9 @@ import UIKit
 import AVFoundation
 
 
-extension VideoView: ItemView {}
+extension VideoView: ItemView {
+}
+
 
 class VideoViewController: ItemBaseController<VideoView> {
 
@@ -23,7 +25,7 @@ class VideoViewController: ItemBaseController<VideoView> {
     let fullHDScreenSizeLandscape = CGSize(width: 1920, height: 1080)
     let fullHDScreenSizePortrait = CGSize(width: 1080, height: 1920)
     let embeddedPlayButton = UIButton.circlePlayButton(70)
-    
+
     private var autoPlayStarted: Bool = false
     private var autoPlayEnabled: Bool = false
 
@@ -32,16 +34,16 @@ class VideoViewController: ItemBaseController<VideoView> {
         self.videoURL = videoURL
         self.scrubber = scrubber
         self.player = AVPlayer(url: self.videoURL)
-        
+
         ///Only those options relevant to the paging VideoViewController are explicitly handled here, the rest is handled by ItemViewControllers
         for item in configuration {
-            
+
             switch item {
-                
-            case .videoAutoPlay(let enabled):
-                autoPlayEnabled = enabled
-                
-            default: break
+
+                case .videoAutoPlay(let enabled):
+                    autoPlayEnabled = enabled
+
+                default: break
             }
         }
 
@@ -107,7 +109,6 @@ class VideoViewController: ItemBaseController<VideoView> {
 
         self.player.play()
 
-
         UIView.animate(withDuration: 0.25, animations: { [weak self] in
 
             self?.embeddedPlayButton.alpha = 0
@@ -149,14 +150,12 @@ class VideoViewController: ItemBaseController<VideoView> {
         return aspectFitSize(forContentOfSize: isLandscape ? fullHDScreenSizeLandscape : fullHDScreenSizePortrait, inBounds: rotationAdjustedBounds().size)
     }
 
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
 
         if keyPath == "rate" || keyPath == "status" {
 
             fadeOutEmbeddedPlayButton()
-        }
-
-        else if keyPath == "contentOffset" {
+        } else if keyPath == "contentOffset" {
 
             handleSwipeToDismissTransition()
         }
@@ -173,7 +172,7 @@ class VideoViewController: ItemBaseController<VideoView> {
 
     func fadeOutEmbeddedPlayButton() {
 
-        if player.isPlaying() && embeddedPlayButton.alpha != 0  {
+        if player.isPlaying() && embeddedPlayButton.alpha != 0 {
 
             UIView.animate(withDuration: 0.3, animations: { [weak self] in
 
@@ -190,45 +189,45 @@ class VideoViewController: ItemBaseController<VideoView> {
 
                 switch event.subtype {
 
-                case .remoteControlTogglePlayPause:
+                    case .remoteControlTogglePlayPause:
 
-                    if self.player.isPlaying()  {
+                        if self.player.isPlaying() {
+
+                            self.player.pause()
+                        } else {
+
+                            self.player.play()
+                        }
+
+                    case .remoteControlPause:
 
                         self.player.pause()
-                    }
-                    else {
+
+                    case .remoteControlPlay:
 
                         self.player.play()
-                    }
 
-                case .remoteControlPause:
+                    case .remoteControlPreviousTrack:
 
-                    self.player.pause()
+                        self.player.pause()
+                        self.player.seek(to: CMTime(value: 0, timescale: 1))
+                        self.player.play()
 
-                case .remoteControlPlay:
+                    default:
 
-                    self.player.play()
-
-                case .remoteControlPreviousTrack:
-
-                    self.player.pause()
-                    self.player.seek(to: CMTime(value: 0, timescale: 1))
-                    self.player.play()
-
-                default:
-
-                    break
+                        break
                 }
             }
         }
     }
-    
+
     private func performAutoPlay() {
         guard autoPlayEnabled else { return }
         guard autoPlayStarted == false else { return }
-        
+
         autoPlayStarted = true
         embeddedPlayButton.isHidden = true
         scrubber.play()
     }
+
 }

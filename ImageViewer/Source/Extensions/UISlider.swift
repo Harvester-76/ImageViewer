@@ -40,4 +40,5 @@ extension Slider {
         let image = self.currentThumbImage?.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
         self.setThumbImage(image, for: UIControl.State.normal)
     }
+
 }

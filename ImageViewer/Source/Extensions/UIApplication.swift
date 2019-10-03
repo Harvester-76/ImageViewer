@@ -8,10 +8,11 @@
 
 import UIKit
 
+
 extension UIApplication {
 
     static var applicationWindow: UIWindow {
-        return (UIApplication.shared.delegate?.window?.flatMap { $0 })!
+        (UIApplication.shared.delegate?.window?.flatMap { $0 })!
     }
 
     static var isPortraitOnly: Bool {
@@ -20,4 +21,5 @@ extension UIApplication {
 
         return !(orientations.contains(.landscapeLeft) || orientations.contains(.landscapeRight) || orientations.contains(.landscape))
     }
+
 }
