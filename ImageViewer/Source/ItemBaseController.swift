@@ -257,6 +257,8 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
                 let aspectFitItemSize = aspectFitSize(forContentOfSize: size, inBounds: self.scrollView.bounds.size)
                 itemView.bounds.size = aspectFitItemSize
             }
+
+            scrollView.zoomScale = 1
             scrollView.contentSize = itemView.bounds.size
 
             itemView.center = scrollView.boundsCenter
