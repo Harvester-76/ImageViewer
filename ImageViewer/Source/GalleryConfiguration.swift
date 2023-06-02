@@ -170,6 +170,9 @@ public enum GalleryConfigurationItem {
 
     ///Tint color of video controls
     case videoControlsColor(UIColor)
+    
+    ///Swiping elements of gallery horizontal or vertical
+    case pagingOrientation(GalleryPagingOrientation)
 }
 
 public enum GalleryRotationMode {
@@ -215,4 +218,10 @@ public struct GallerySwipeToDismissMode: OptionSet {
     public static let horizontal = GallerySwipeToDismissMode(rawValue: 1 << 0)
     public static let vertical   = GallerySwipeToDismissMode(rawValue: 1 << 1)
     public static let always: GallerySwipeToDismissMode = [ .horizontal, .vertical ]
+}
+
+public enum GalleryPagingOrientation {
+
+    case horizontal
+    case vertical
 }

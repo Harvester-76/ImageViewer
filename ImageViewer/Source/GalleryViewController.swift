@@ -56,6 +56,7 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
     fileprivate var rotationMode = GalleryRotationMode.always
     fileprivate let swipeToDismissFadeOutAccelerationFactor: CGFloat = 6
     fileprivate var decorationViewsFadeDuration = 0.15
+    fileprivate var pagingOrientation: GalleryPagingOrientation = .horizontal
 
     /// COMPLETION BLOCKS
     /// If set, the block is executed right after the initial launch animations finish.
@@ -114,6 +115,7 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
                 case .continuePlayVideoOnEnd(let enabled):          continueNextVideoOnFinish = enabled
                 case .seeAllCloseLayout(let layout):                seeAllCloseLayout = layout
                 case .videoControlsColor(let color):                scrubber.tintColor = color
+                case .pagingOrientation(let pagingOrientation):     self.pagingOrientation = pagingOrientation
                 case .closeButtonMode(let buttonMode):
 
                     switch buttonMode {
@@ -165,7 +167,7 @@ open class GalleryViewController: UIPageViewController, ItemControllerDelegate {
         pagingDataSource = GalleryPagingDataSource(itemsDataSource: itemsDataSource, displacedViewsDataSource: displacedViewsDataSource, scrubber: scrubber, configuration: configuration)
 
         super.init(transitionStyle: UIPageViewController.TransitionStyle.scroll,
-                navigationOrientation: UIPageViewController.NavigationOrientation.horizontal,
+                   navigationOrientation: pagingOrientation == .vertical ? UIPageViewController.NavigationOrientation.vertical : UIPageViewController.NavigationOrientation.horizontal,
                 options: [UIPageViewController.OptionsKey.interPageSpacing: NSNumber(value: spineDividerWidth as Float)])
 
         pagingDataSource.itemControllerDelegate = self
