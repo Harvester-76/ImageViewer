@@ -8,22 +8,20 @@
 
 import UIKit
 
-
 public protocol ItemView {
 
     var image: UIImage? { get set }
 }
-
 
 open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGestureRecognizerDelegate, UIScrollViewDelegate where T: ItemView {
 
     //UI
     public var itemView = T()
     let scrollView = UIScrollView()
-    public let activityIndicatorView = UIActivityIndicatorView(style: .white)
+    let activityIndicatorView = UIActivityIndicatorView(style: .white)
 
     //DELEGATE / DATASOURCE
-    weak public var delegate: ItemControllerDelegate?
+    weak public var delegate:                 ItemControllerDelegate?
     weak public var displacedViewsDataSource: GalleryDisplacedViewsDataSource?
 
     //STATE
@@ -48,11 +46,9 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
     fileprivate var thresholdVelocity: CGFloat = 500 // The speed of swipe needs to be at least this amount of pixels per second for the swipe to finish dismissal.
     fileprivate var displacementKeepOriginalInPlace = false
     fileprivate var displacementInsetMargin: CGFloat = 50
-    fileprivate var displacementRequiresOriginalSize = false
     fileprivate var swipeToDismissMode = GallerySwipeToDismissMode.always
     fileprivate var toggleDecorationViewBySingleTap = true
     fileprivate var activityViewByLongPress = true
-    fileprivate var activityIndicatorHidden = false
 
     /// INTERACTIONS
     fileprivate var singleTapRecognizer: UITapGestureRecognizer?
@@ -77,34 +73,32 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
 
             switch item {
 
-                case .swipeToDismissThresholdVelocity(let velocity):    thresholdVelocity = velocity
-                case .doubleTapToZoomDuration(let duration):            doubleTapToZoomDuration = duration
-                case .presentationStyle(let style):                     presentationStyle = style
-                case .pagingMode(let mode):                             pagingMode = mode
-                case .displacementDuration(let duration):               displacementDuration = duration
-                case .reverseDisplacementDuration(let duration):        reverseDisplacementDuration = duration
-                case .displacementTimingCurve(let curve):               displacementTimingCurve = curve
-                case .maximumZoomScale(let scale):                      maximumZoomScale = scale
-                case .itemFadeDuration(let duration):                   itemFadeDuration = duration
-                case .displacementKeepOriginalInPlace(let keep):        displacementKeepOriginalInPlace = keep
-                case .displacementInsetMargin(let margin):              displacementInsetMargin = margin
-                case .displacementRequiresOriginalSize(let require):    displacementRequiresOriginalSize = require
-                case .swipeToDismissMode(let mode):                     swipeToDismissMode = mode
-                case .toggleDecorationViewsBySingleTap(let enabled):    toggleDecorationViewBySingleTap = enabled
-                case .activityViewByLongPress(let enabled):             activityViewByLongPress = enabled
-                case .spinnerColor(let color):                          activityIndicatorView.color = color
-                case .spinnerStyle(let style):                          activityIndicatorView.style = style
-                case .spinnerHidden(let hidden):                        activityIndicatorHidden = hidden
+            case .swipeToDismissThresholdVelocity(let velocity):    thresholdVelocity = velocity
+            case .doubleTapToZoomDuration(let duration):            doubleTapToZoomDuration = duration
+            case .presentationStyle(let style):                     presentationStyle = style
+            case .pagingMode(let mode):                             pagingMode = mode
+            case .displacementDuration(let duration):               displacementDuration = duration
+            case .reverseDisplacementDuration(let duration):        reverseDisplacementDuration = duration
+            case .displacementTimingCurve(let curve):               displacementTimingCurve = curve
+            case .maximumZoomScale(let scale):                      maximumZoomScale = scale
+            case .itemFadeDuration(let duration):                   itemFadeDuration = duration
+            case .displacementKeepOriginalInPlace(let keep):        displacementKeepOriginalInPlace = keep
+            case .displacementInsetMargin(let margin):              displacementInsetMargin = margin
+            case .swipeToDismissMode(let mode):                     swipeToDismissMode = mode
+            case .toggleDecorationViewsBySingleTap(let enabled):    toggleDecorationViewBySingleTap = enabled
+            case .activityViewByLongPress(let enabled):             activityViewByLongPress = enabled
+            case .spinnerColor(let color):                          activityIndicatorView.color = color
+            case .spinnerStyle(let style):                          activityIndicatorView.style = style
 
-                case .displacementTransitionStyle(let style):
+            case .displacementTransitionStyle(let style):
 
-                    switch style {
+                switch style {
 
-                        case .springBounce(let bounce):                     displacementSpringBounce = bounce
-                        case .normal:                                       displacementSpringBounce = 1
-                    }
+                case .springBounce(let bounce):                     displacementSpringBounce = bounce
+                case .normal:                                       displacementSpringBounce = 1
+                }
 
-                default: break
+            default: break
             }
         }
 
@@ -120,7 +114,7 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
         activityIndicatorView.hidesWhenStopped = true
     }
 
-    @available(*, unavailable)
+    @available (*, unavailable)
     required public init?(coder aDecoder: NSCoder) { fatalError() }
 
     deinit {
@@ -165,12 +159,12 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
 
         if activityViewByLongPress == true {
 
-            let longPressRecognizer = UILongPressGestureRecognizer()
+          let longPressRecognizer = UILongPressGestureRecognizer()
 
-            longPressRecognizer.addTarget(self, action: #selector(scrollViewDidLongPress))
-            scrollView.addGestureRecognizer(longPressRecognizer)
+          longPressRecognizer.addTarget(self, action: #selector(scrollViewDidLongPress))
+          scrollView.addGestureRecognizer(longPressRecognizer)
 
-            self.longPressRecognizer = longPressRecognizer
+          self.longPressRecognizer = longPressRecognizer
         }
 
         if swipeToDismissMode != .never {
@@ -187,9 +181,7 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
         self.view.addSubview(scrollView)
         scrollView.addSubview(itemView)
 
-        if !activityIndicatorHidden {
-            activityIndicatorView.startAnimating()
-        }
+        activityIndicatorView.startAnimating()
         view.addSubview(activityIndicatorView)
     }
 
@@ -249,16 +241,11 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
         scrollView.frame = self.view.bounds
         activityIndicatorView.center = view.boundsCenter
 
-        if let size = itemView.image?.size, size != CGSize.zero {
+        if let size = itemView.image?.size , size != CGSize.zero {
 
-            if displacementRequiresOriginalSize, let targetSize = displacedViewsDataSource?.displacementItem(atIndex: index, targetSizeInBounds: self.scrollView.bounds.size) {
-                itemView.bounds.size = targetSize
-            } else {
-                let aspectFitItemSize = aspectFitSize(forContentOfSize: size, inBounds: self.scrollView.bounds.size)
-                itemView.bounds.size = aspectFitItemSize
-            }
+            let aspectFitItemSize = aspectFitSize(forContentOfSize: size, inBounds: self.scrollView.bounds.size)
 
-            scrollView.zoomScale = 1
+            itemView.bounds.size = aspectFitItemSize
             scrollView.contentSize = itemView.bounds.size
 
             itemView.center = scrollView.boundsCenter
@@ -266,12 +253,14 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
     }
 
     public func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        itemView
+
+        return itemView
     }
 
     // MARK: - Scroll View delegate methods
 
     public func scrollViewDidZoom(_ scrollView: UIScrollView) {
+
         itemView.center = contentCenter(forBoundingSize: scrollView.bounds.size, contentSize: scrollView.contentSize)
     }
 
@@ -297,12 +286,13 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
             UIView.animate(withDuration: doubleTapToZoomDuration, animations: { [weak self] in
 
                 self?.scrollView.zoom(to: zoomRectangle, animated: false)
-            })
-        } else {
-            UIView.animate(withDuration: doubleTapToZoomDuration, animations: { [weak self] in
+                })
+        }
+        else  {
+            UIView.animate(withDuration: doubleTapToZoomDuration, animations: {  [weak self] in
 
                 self?.scrollView.setZoomScale(1.0, animated: false)
-            })
+                })
         }
     }
 
@@ -319,17 +309,18 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
 
         switch recognizer.state {
 
-            case .began:
-                swipeToDismissTransition = GallerySwipeToDismissTransition(scrollView: self.scrollView)
+        case .began:
+            swipeToDismissTransition = GallerySwipeToDismissTransition(scrollView: self.scrollView)
 
-            case .changed:
-                self.handleSwipeToDismissInProgress(swipingToDismissInProgress, forTouchPoint: currentTouchPoint)
 
-            case .ended:
-                self.handleSwipeToDismissEnded(swipingToDismissInProgress, finalVelocity: currentVelocity, finalTouchPoint: currentTouchPoint)
+        case .changed:
+            self.handleSwipeToDismissInProgress(swipingToDismissInProgress, forTouchPoint: currentTouchPoint)
 
-            default:
-                break
+        case .ended:
+            self.handleSwipeToDismissEnded(swipingToDismissInProgress, finalVelocity: currentVelocity, finalTouchPoint: currentTouchPoint)
+
+        default:
+            break
         }
     }
 
@@ -339,23 +330,23 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
 
         switch (swipeOrientation, index) {
 
-            case (.horizontal, 0) where self.itemCount != 1:
+        case (.horizontal, 0) where self.itemCount != 1:
 
-                /// edge case horizontal first index - limits the swipe to dismiss to HORIZONTAL RIGHT direction.
-                swipeToDismissTransition?.updateInteractiveTransition(horizontalOffset: min(0, -touchPoint.x))
+            /// edge case horizontal first index - limits the swipe to dismiss to HORIZONTAL RIGHT direction.
+            swipeToDismissTransition?.updateInteractiveTransition(horizontalOffset: min(0, -touchPoint.x))
 
-            case (.horizontal, self.itemCount - 1) where self.itemCount != 1:
+        case (.horizontal, self.itemCount - 1) where self.itemCount != 1:
 
-                /// edge case horizontal last index - limits the swipe to dismiss to HORIZONTAL LEFT direction.
-                swipeToDismissTransition?.updateInteractiveTransition(horizontalOffset: max(0, -touchPoint.x))
+            /// edge case horizontal last index - limits the swipe to dismiss to HORIZONTAL LEFT direction.
+            swipeToDismissTransition?.updateInteractiveTransition(horizontalOffset: max(0, -touchPoint.x))
 
-            case (.horizontal, _):
+        case (.horizontal, _):
 
-                swipeToDismissTransition?.updateInteractiveTransition(horizontalOffset: -touchPoint.x) // all the rest
+            swipeToDismissTransition?.updateInteractiveTransition(horizontalOffset: -touchPoint.x) // all the rest
 
-            case (.vertical, _):
+        case (.vertical, _):
 
-                swipeToDismissTransition?.updateInteractiveTransition(verticalOffset: -touchPoint.y) // all the rest
+            swipeToDismissTransition?.updateInteractiveTransition(verticalOffset: -touchPoint.y) // all the rest
         }
     }
 
@@ -372,45 +363,45 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
 
         switch (swipeOrientation, index) {
 
-            /// Any item VERTICAL UP direction
-            case (.vertical, _) where velocity.y < -thresholdVelocity:
+        /// Any item VERTICAL UP direction
+        case (.vertical, _) where velocity.y < -thresholdVelocity:
 
-                swipeToDismissTransition?.finishInteractiveTransition(swipeOrientation,
-                        touchPoint: touchPoint.y,
-                        targetOffset: (view.bounds.height / 2) + (itemView.bounds.height / 2),
-                        escapeVelocity: velocity.y,
-                        completion: swipeToDismissCompletionBlock)
-            /// Any item VERTICAL DOWN direction
-            case (.vertical, _) where thresholdVelocity < velocity.y:
+            swipeToDismissTransition?.finishInteractiveTransition(swipeOrientation,
+                                                                  touchPoint: touchPoint.y,
+                                                                  targetOffset: (view.bounds.height / 2) + (itemView.bounds.height / 2),
+                                                                  escapeVelocity: velocity.y,
+                                                                  completion: swipeToDismissCompletionBlock)
+        /// Any item VERTICAL DOWN direction
+        case (.vertical, _) where thresholdVelocity < velocity.y:
 
-                swipeToDismissTransition?.finishInteractiveTransition(swipeOrientation,
-                        touchPoint: touchPoint.y,
-                        targetOffset: -(view.bounds.height / 2) - (itemView.bounds.height / 2),
-                        escapeVelocity: velocity.y,
-                        completion: swipeToDismissCompletionBlock)
-            /// First item HORIZONTAL RIGHT direction
-            case (.horizontal, 0) where thresholdVelocity < velocity.x:
+            swipeToDismissTransition?.finishInteractiveTransition(swipeOrientation,
+                                                                  touchPoint: touchPoint.y,
+                                                                  targetOffset: -(view.bounds.height / 2) - (itemView.bounds.height / 2),
+                                                                  escapeVelocity: velocity.y,
+                                                                  completion: swipeToDismissCompletionBlock)
+        /// First item HORIZONTAL RIGHT direction
+        case (.horizontal, 0) where thresholdVelocity < velocity.x:
 
-                swipeToDismissTransition?.finishInteractiveTransition(swipeOrientation,
-                        touchPoint: touchPoint.x,
-                        targetOffset: -(view.bounds.width / 2) - (itemView.bounds.width / 2),
-                        escapeVelocity: velocity.x,
-                        completion: swipeToDismissCompletionBlock)
-            /// Last item HORIZONTAL LEFT direction
-            case (.horizontal, maxIndex) where velocity.x < -thresholdVelocity:
+            swipeToDismissTransition?.finishInteractiveTransition(swipeOrientation,
+                                                                  touchPoint: touchPoint.x,
+                                                                  targetOffset: -(view.bounds.width / 2) - (itemView.bounds.width / 2),
+                                                                  escapeVelocity: velocity.x,
+                                                                  completion: swipeToDismissCompletionBlock)
+        /// Last item HORIZONTAL LEFT direction
+        case (.horizontal, maxIndex) where velocity.x < -thresholdVelocity:
 
-                swipeToDismissTransition?.finishInteractiveTransition(swipeOrientation,
-                        touchPoint: touchPoint.x,
-                        targetOffset: (view.bounds.width / 2) + (itemView.bounds.width / 2),
-                        escapeVelocity: velocity.x,
-                        completion: swipeToDismissCompletionBlock)
+            swipeToDismissTransition?.finishInteractiveTransition(swipeOrientation,
+                                                                  touchPoint: touchPoint.x,
+                                                                  targetOffset: (view.bounds.width / 2) + (itemView.bounds.width / 2),
+                                                                  escapeVelocity: velocity.x,
+                                                                  completion: swipeToDismissCompletionBlock)
 
-            ///If none of the above select cases, we cancel.
-            default:
+        ///If none of the above select cases, we cancel.
+        default:
 
-                swipeToDismissTransition?.cancelTransition() { [weak self] in
-                    self?.swipingToDismiss = nil
-                }
+            swipeToDismissTransition?.cancelTransition() { [weak self] in
+                self?.swipingToDismiss = nil
+            }
         }
     }
 
@@ -419,7 +410,7 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
         guard (self.isAnimating == false) else { return }
         isAnimating = true
 
-        UIView.animate(withDuration: duration, animations: { [weak self] in
+        UIView.animate(withDuration: duration, animations: {  [weak self] in
 
             self?.scrollView.zoomScale = self!.scrollView.minimumZoomScale
 
@@ -450,7 +441,7 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
         alongsideAnimation()
 
         if var displacedView = displacedViewsDataSource?.provideDisplacementItem(atIndex: index),
-           let image = displacedView.image {
+            let image = displacedView.image {
 
             if presentationStyle == .displacement {
 
@@ -482,34 +473,31 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
                     animatedImageView.bounds.size = self?.displacementTargetSize(forSize: image.size) ?? image.size
                     animatedImageView.center = self?.view.boundsCenter ?? CGPoint.zero
 
-                }, completion: { [weak self] _ in
+                    }, completion: { [weak self] _ in
 
-                    self?.itemView.isHidden = false
+                        self?.itemView.isHidden = false
+                        displacedView.isHidden = false
+                        animatedImageView.removeFromSuperview()
 
-                    if self?.itemView.image == nil {
-                        self?.itemView.image = image
-                    }
-
-                    displacedView.isHidden = false
-                    animatedImageView.removeFromSuperview()
-
-                    self?.isAnimating = false
-                    completion()
-                })
+                        self?.isAnimating = false
+                        completion()
+                    })
             }
-        } else {
+        }
+
+        else {
 
             itemView.alpha = 0
             itemView.isHidden = false
 
             UIView.animate(withDuration: itemFadeDuration, animations: { [weak self] in
 
-                self?.itemView.alpha = 1
+            self?.itemView.alpha = 1
 
             }, completion: { [weak self] _ in
 
-                completion()
-                self?.isAnimating = false
+            completion()
+            self?.isAnimating = false
             })
         }
     }
@@ -517,10 +505,6 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
     func displacementTargetSize(forSize size: CGSize) -> CGSize {
 
         let boundingSize = rotationAdjustedBounds().size
-
-        if displacementRequiresOriginalSize, let targetSize = displacedViewsDataSource?.displacementItem(atIndex: index, targetSizeInBounds: boundingSize) {
-            return targetSize
-        }
 
         return aspectFitSize(forContentOfSize: size, inBounds: boundingSize)
     }
@@ -545,28 +529,28 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
 
         switch presentationStyle {
 
-            case .displacement:
+        case .displacement:
 
-                if var displacedView = self.findVisibleDisplacedView() {
+            if var displacedView = self.findVisibleDisplacedView() {
 
-                    if displacementKeepOriginalInPlace == false {
-                        displacedView.isHidden = true
+                if displacementKeepOriginalInPlace == false {
+                    displacedView.isHidden = true
+                }
+
+                UIView.animate(withDuration: reverseDisplacementDuration, animations: { [weak self] in
+
+                    self?.scrollView.zoomScale = 1
+
+                    //rotate the image view
+                    if UIApplication.isPortraitOnly == true {
+                        self?.itemView.transform = deviceRotationTransform()
                     }
 
-                    UIView.animate(withDuration: reverseDisplacementDuration, animations: { [weak self] in
-
-                        self?.scrollView.zoomScale = 1
-
-                        //rotate the image view
-                        if UIApplication.isPortraitOnly == true {
-                            self?.itemView.transform = deviceRotationTransform()
-                        }
-
-                        //position the image view to starting center
-                        self?.itemView.bounds = displacedView.bounds
-                        self?.itemView.center = displacedView.convert(displacedView.boundsCenter, to: self!.view)
-                        self?.itemView.clipsToBounds = true
-                        self?.itemView.contentMode = displacedView.contentMode
+                    //position the image view to starting center
+                    self?.itemView.bounds = displacedView.bounds
+                    self?.itemView.center = displacedView.convert(displacedView.boundsCenter, to: self!.view)
+                    self?.itemView.clipsToBounds = true
+                    self?.itemView.contentMode = displacedView.contentMode
 
                     }, completion: { [weak self] _ in
 
@@ -574,22 +558,22 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
                         displacedView.isHidden = false
 
                         completion()
-                    })
-                } else {
-                    fallthrough
-                }
-
-            case .fade:
-
-                UIView.animate(withDuration: itemFadeDuration, animations: { [weak self] in
-
-                    self?.itemView.alpha = 0
-
-                }, completion: { [weak self] _ in
-
-                    self?.isAnimating = false
-                    completion()
                 })
+            }
+
+            else { fallthrough }
+
+        case .fade:
+
+            UIView.animate(withDuration: itemFadeDuration, animations: {  [weak self] in
+
+                self?.itemView.alpha = 0
+
+            }, completion: { [weak self] _ in
+
+                self?.isAnimating = false
+                completion()
+            })
         }
     }
 
@@ -630,15 +614,15 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
 
         switch swipingToDismissInProgress {
 
-            case .horizontal:
+        case .horizontal:
 
-                distanceToEdge = (scrollView.bounds.width / 2) + (itemView.bounds.width / 2)
-                percentDistance = abs(scrollView.contentOffset.x / distanceToEdge)
+            distanceToEdge = (scrollView.bounds.width / 2) + (itemView.bounds.width / 2)
+            percentDistance = abs(scrollView.contentOffset.x / distanceToEdge)
 
-            case .vertical:
+        case .vertical:
 
-                distanceToEdge = (scrollView.bounds.height / 2) + (itemView.bounds.height / 2)
-                percentDistance = abs(scrollView.contentOffset.y / distanceToEdge)
+            distanceToEdge = (scrollView.bounds.height / 2) + (itemView.bounds.height / 2)
+            percentDistance = abs(scrollView.contentOffset.y / distanceToEdge)
         }
 
         if let delegate = self.delegate {
@@ -649,5 +633,4 @@ open class ItemBaseController<T: UIView>: UIViewController, ItemController, UIGe
     public func closeDecorationViews(_ duration: TimeInterval) {
         // stub
     }
-
 }

@@ -117,7 +117,6 @@ class ViewController: UIViewController {
             GalleryConfigurationItem.overlayColorOpacity(1),
             GalleryConfigurationItem.overlayBlurOpacity(1),
             GalleryConfigurationItem.overlayBlurStyle(UIBlurEffect.Style.light),
-
             GalleryConfigurationItem.videoControlsColor(.white),
 
             GalleryConfigurationItem.maximumZoomScale(8),
